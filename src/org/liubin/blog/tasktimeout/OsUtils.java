@@ -43,7 +43,7 @@ public class OsUtils {
         String stdout = "";
 
         while ((line = reader.readLine()) != null) {
-            stdout += line;
+            stdout += line + "\n";
         }
 
         // wait to complete
