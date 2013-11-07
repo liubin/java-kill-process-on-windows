@@ -19,13 +19,16 @@ public class TimeoutTaskKiller implements Runnable {
     @Override
     public void run() {
         while (true) {
-            System.out.println("killer is comming");
+
+            System.out.println("+++++++++ killer is comming");
 
             // get the latest task list for the command(PING.EXE)
             getTaskList();
 
             // do kill old job
             kill();
+
+            System.out.println("+++++++++ killer is going");
 
             // simply sleep for the next job
             try {
@@ -58,9 +61,13 @@ public class TimeoutTaskKiller implements Runnable {
         }
     }
 
-    /*
-     * update the task list make this method static is just for TaskWithPid to
-     * use the TASKLIST call.
+    /**
+     * 
+     * update the task list
+     * 
+     * make this method static is just for TaskWithPid to use the TASKLIST call.
+     * 
+     * @return
      */
     public static synchronized Hashtable<Long, Long> getTaskList() {
 
@@ -110,14 +117,7 @@ public class TimeoutTaskKiller implements Runnable {
         }
         // step 2 . update old processes's lastticks
 
-        Set<Entry<Long, Long>> entries = (Set<Entry<Long, Long>>) oldProcesses
-                .entrySet();
-
-        for (Entry<Long, Long> e : entries) {
-            if (!processes.containsKey(e.getKey())) {
-                processes.put(e.getKey(), e.getValue());
-            }
-        }
+        HashtableUtils.merge(oldProcesses, processes);
 
         // for test
         dump();
@@ -132,7 +132,8 @@ public class TimeoutTaskKiller implements Runnable {
 
         System.out.println("begin dump processes. size is " + processes.size());
         for (Entry<Long, Long> e : entries) {
-            System.out.println(e.getKey() + ":" + e.getValue());
+            System.out.println("PID:" + e.getKey() + ",started at : "
+                    + new Date(e.getValue()));
         }
         System.out.println("end dump processes");
 

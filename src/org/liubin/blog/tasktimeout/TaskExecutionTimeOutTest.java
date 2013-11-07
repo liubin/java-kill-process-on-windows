@@ -25,15 +25,21 @@ public class TaskExecutionTimeOutTest {
         // add a PING.EXE thread per 20 seconds for 10 times
         // and after 120 seconds ,
         // TimeoutTaskKiller will kill PING.exe every 10 seconds
-        SimpleTimeoutTask stt;
-        for (int i = 0; i < 10; i++) {
-            stt = new SimpleTimeoutTask(CMD_TIME_OUT);
-            stt.test();
-            try {
-                Thread.sleep(20 * 1000);
-            } catch (InterruptedException e1) {
+        new Thread() {
+            @Override
+            public void run() {
+
+                SimpleTimeoutTask stt;
+                for (int i = 0; i < 10; i++) {
+                    stt = new SimpleTimeoutTask(CMD_TIME_OUT);
+                    stt.test();
+                    try {
+                        Thread.sleep(20 * 1000);
+                    } catch (InterruptedException e1) {
+                    }
+                }
             }
-        }
+        }.start();
 
         // test case 2 TaskWithPid will kill the started process when time out.
         TaskWithPid twp = new TaskWithPid(CMD_TIME_OUT);
